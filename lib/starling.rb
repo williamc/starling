@@ -9,7 +9,14 @@ class Starling < MemCache
   ##
   # fetch an item from a queue.
 
+  def get_from(position, *args)
+    puts args.inspect
+    get(position.to_s+":"+args[0].to_s)
+    # get(args[0..-1])
+  end
+
   def get(*args)
+    puts "*****" + args.inspect
     loop do
       response = _original_get(*args)
       return response unless response.nil?
@@ -64,6 +71,12 @@ class Starling < MemCache
   #
   # If +raw+ is true, +value+ will not be Marshalled. If +raw+ = :yaml, +value+
   # will be serialized with YAML, instead.
+  
+  def set_at(position, queue, value, expiry = 0, raw=false)
+    puts "set_at: position: #{position} queue=#{queue} value=#{value}"
+    set(position.to_s+':'+queue,value,expiry,raw)
+    puts "after set"
+  end
 
   def set(queue, value, expiry = 0, raw = false)
     retries = 0
